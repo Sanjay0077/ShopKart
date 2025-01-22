@@ -66,13 +66,18 @@ def store(request):
 	itm = []
 	if customer_id:	
 		for item in items:
-			# product_id = item['product']['id']
+			#product_id = item['product']['id']
 			product_id = item.product.id
+			itm.append(product_id)
+	else:	
+		for item in items:
+			product_id = item['product']['id']
+			# product_id = item.product.id
 			itm.append(product_id)
 			
 
 	print(itm)
-	
+	# print(items)
 
 	context = {'products':products, 'cartItems':cartItems,'user': customer, 'favorite_product_names': favorite_product_names,"catagory":catagory,'itm':itm,'items':items}
 	return render(request, 'store/store.html', context)
@@ -277,6 +282,7 @@ def logout_view(request):
 	if 'customer_id' in request.session:
 		del request.session['customer_id']  # Remove customer ID from session
 		del request.session['imageURL']
+		# request.session['customer_id'] = 'AnonymousUser'
 		request.session.modified = True    # Ensure session is updated
 	elif 'seller_id' in request.session:
 		del request.session['seller_id']  # Remove customer ID from session
