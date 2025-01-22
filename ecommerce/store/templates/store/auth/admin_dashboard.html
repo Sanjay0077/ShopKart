@@ -1,0 +1,45 @@
+{% extends 'store/main.html' %}
+<h1>Registered Sellers</h1>
+
+{% block navbar %}
+{% endblock %}
+{% block content %}
+<a href="{% url 'seller_reg' %}"><button type="button" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add Seller</button></a>
+<br>
+<section class="py-4 my-5" style="min-height:600px;">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h4 class="mb-3">Seller Details</h4>
+          <hr style="border-color:#b8bfc2;">
+        </div>
+      
+        <table>
+            <tr>
+                <th>Company Name</th>
+                <th>Product Type</th>
+                <th>Email</th>
+                <th>Mobile Number</th>
+              </tr>
+          
+
+              {% for seller in sellers %}
+           <tr>
+            <td>{{ seller.company_name }}</td>
+            <td>{{ seller.product_type }}</td>
+            <td>{{ seller.email }}</td>
+            <td>{{ seller.mobile_number }}</td>
+            <td><a href="{% url 'removeseller' seller.id %}"  onclick="return confirm('Are you sure? to Remove')"  class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Remove Seller</a></td>
+            </tr>
+            {% endfor %}
+           
+        </table>
+       
+      </div>
+      </div>
+  </section>
+
+  {% endblock %}
+
+
+ 

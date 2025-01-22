@@ -1,0 +1,314 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-3 my-lg-0 my-md-1">
+            <div id="sidebar" class="bg-purple">
+                <div class="h4 text-white">Account</div>
+                <ul>
+                    <li class="active" id="tab-myAccount">
+                        <a href="#" onclick="showContent('myAccount')" class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Account</div>
+                                <!-- <div class="link-desc">View & Manage orders and returns</div> -->
+                            </div>
+                        </a>
+                    </li>
+                    <li id="tab-myOrders">
+                        <a href="#"  onclick="showContent('myOrders')"  class="text-decoration-none d-flex align-items-start">
+                            <div class="fas fa-box-open pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Orders</div>
+                                <!-- <div class="link-desc">View & Manage orders and returns</div> -->
+                            </div>
+                        </a>
+                    </li>
+                    <li id="tab-addressBook">
+                        <a href="#" onclick="showContent('addressBook')" class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-address-book pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">Address Book</div>
+                                <!-- <div class="link-desc">View & Manage Addresses</div> -->
+                            </div>
+                        </a>
+                    </li>
+                    <li  id="tab-myProfile">
+                        <a href="#"  onclick="showContent('myProfile')"  class="text-decoration-none d-flex align-items-start">
+                            <div class="far fa-user pt-2 me-3"></div>
+                            <div class="d-flex flex-column">
+                                <div class="link">My Profile</div>
+                                <!-- <div class="link-desc">Change your profile details & password</div> -->
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-lg-9 my-lg-0 my-1">
+            <div id="myAccount" class="tab-content">
+                <div id="main-content" class="bg-white border">
+                    <div class="d-flex flex-column">
+                        <div class="h5"> {{ customer.firstname }}</div>
+                        <div>Logged in as: {{ customer.email }}</div>
+                    </div>
+                    <div class="d-flex my-4 flex-wrap">
+                        <div class="box me-4 my-1 bg-light">
+                            <img src="https://www.freepnglogos.com/uploads/box-png/cardboard-box-brown-vector-graphic-pixabay-2.png"
+                                alt="">
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="tag">Orders placed</div>
+                                <div class="ms-auto number">{{order_completion_count}}</div>
+                            </div>
+                        </div>
+                        <div class="box me-4 my-1 bg-light">
+                            <img src="https://www.freepnglogos.com/uploads/shopping-cart-png/shopping-cart-campus-recreation-university-nebraska-lincoln-30.png"
+                                alt="">
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="tag">Items in Cart</div>
+                                <div class="ms-auto number">{{order.get_cart_items}}</div>
+                            </div>
+                        </div>
+                        <div class="box me-4 my-1 bg-light">
+                            <img src="https://www.freepnglogos.com/uploads/love-png/love-png-heart-symbol-wikipedia-11.png"
+                                alt="">
+                            <div class="d-flex align-items-center mt-2">
+                                <div class="tag">Wishlist</div>
+                                <div class="ms-auto number">{{ fav | length}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                  
+                    <div class="text-uppercase">My recent orders</div>
+                    <div class="order my-3 bg-light">
+                    
+                        <div class="row">
+                            {% for order in order_status %}
+                            {% if order.get_cart_items > 0 or order.complete%}
+                            <div class="col-lg-12 py-6 pb-4">
+                                <div class="d-flex flex-column justify-content-between order-summary">
+                                    <div class="d-flex align-items-center">
+                                        <div class="text-uppercase">{% if order.transaction_id %} {{order.transaction_id}} {% else %} Pending {% endif %}</div>
+                                        <div class="blue-label ms-auto text-uppercase">    {% if order.complete %}
+                                            Paid
+                                        {% else %}
+                                            In Progress
+                                        {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="fs-8">Order Id: {{order}}</div>
+                                    <div class="fs-8">{{order.date_ordered}}</div>
+                                </div>
+                            </div>
+                            {% comment %} {% else %}
+                        <div class="text d-flex justify-content-center align-items-center">You not have any item in cart</div> {% endcomment %}
+                            {% endif %} 
+                            {% endfor %}
+                        </div>
+                    
+                    </div>
+                    
+                </div> 
+                {% comment %} {% else%}
+                <div class="text">You not have any item in cart</div>
+                {% endif %} {% endcomment %}
+            </div>
+            <!-- My Orders Content -->
+
+            <div id="myOrders" class="tab-content">
+                <div class="h5">My Orders</div>
+                
+                 
+                <p>Here are your recent orders:</p>
+                    {% for order in order_status %}
+                    {% if order.get_cart_items > 0 or order.complete%}
+                        <div class="order my-3 bg-light">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="order-summary">
+                                        <!-- Display Order Details -->
+                                        <div class="text-uppercase">Order ID: {{ order.id }}</div>
+                                        <div class="text-uppercase">Customer: {{ order.customer }}</div>
+                                        <div class="blue-label ms-auto text-uppercase" style="display:inline">
+                                            {% if order.complete %}
+                                                Paid
+                                            {% else %}
+                                                In Progress
+                                            {% endif %}
+                                        </div>
+                                        <div>Order Date: {{ order.date_ordered }}</div>
+                                        <div>
+                                            {% for item in ShippingAdd %}
+                                            {% if item.order == order %}
+                                            Address :{{item.address}}, {{item.city}}, {{item.state}}, {{item.country}}, {{item.zipcode}}
+                                            {%endif%} 
+                                            {%endfor%}
+                                        </div>
+                                        <!-- Display Related Items -->
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="box-element">
+                                                    <div class="cart-row">
+                                                        <div style="flex:2"></div>
+                                                        <div style="flex:2"></strong>Item</strong></div>
+                                                        <div style="flex:1"></strong>Price</strong></div>
+                                                        <div style="flex:1"></strong>Quantity</strong></div>
+                                                        <div style="flex:1"></strong>Total</strong></div>
+                                                    </div>
+                                                    {% for item in order_item %}
+                                                    {% if item.order == order %}
+                                                    <div class="cart-row">
+                                                        <div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"> </div>
+                                                        <div style="flex:2">{{item.product.name | truncatewords:3}}</div>
+                                                        <div style="flex:1">${{item.product.price|floatformat:2}}</div>
+                                                        <div style="flex:1">
+                                                            <p class="quantity">x{{item.quantity}}</p>
+                                                        </div>
+                                                        <div style="flex:1">${{item.get_total}}</div>
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} {% else %}
+                        <div class="text d-flex justify-content-center align-items-center">You not have any orders right now</div> {% endcomment %}
+                        {% endif %}
+                    {% endfor %}
+
+            </div>
+            <!-- Address Book Content -->
+            <div id="addressBook" class="tab-content" style="display: none;">
+                <div class="h5">Home Address</div>
+            
+                <form action="{% url 'update_address' customer.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="inputAddress" class="form-label">Address</label>
+                            <input type="text" class="form-control" name="home_address" id="inputAddress"
+                                value="{{ customer.home_address }}" placeholder="1234 Main St" required disabled>
+                        </div>
+                        <div class="col-12">
+                            <label for="workInputAddress" class="form-label">Work Address</label>
+                            <input type="text" class="form-control" name="work_address" id="workInputAddress"
+                                value="{{ customer.work_address }}" placeholder="1234 Main St" required disabled>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" class="btn btn-secondary" id="editAddress">Edit Address</button>
+                            <button type="submit" class="btn btn-primary" id="saveAddress" style="display: none;">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- My Profile Content -->
+            <div id="myProfile" class="tab-content" style="display: none;">
+                <div class="h5">My Profile</div>
+                
+
+
+                <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                    <img src="{{ customer.imageURL }}" class="rounded-circle shadow-4"
+                        style="width: 150px;" alt="Avatar" />
+                </div>
+            
+                <form action="{% url 'update_profile' customer.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row gy-3 overflow-hidden">
+                        <div class="col-12">
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" name="proimg" id="proimg" style="display:none" required>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="firstname" id="firstname"
+                                    value="{{ customer.firstname }}" placeholder="First Name" required disabled>
+                                <label for="firstname" class="form-label">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="lastname" id="lastname"
+                                    value="{{ customer.lastname }}" placeholder="Last Name" required disabled>
+                                <label for="lastname" class="form-label">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" name="email" id="email" value="{{ customer.email }}"
+                                    placeholder="name@example.com" required disabled>
+                                <label for="email" class="form-label">Email</label>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="mobilenumber" id="mobilenumber"
+                                    value="{{ customer.mobile_number }}" placeholder="" required disabled>
+                                <label for="mobilenumber" class="form-label">Mobile Number</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button type="button" class="btn btn-secondary" id="editProfile">Edit Profile</button>
+                            <button type="submit" class="btn btn-primary" id="saveProfile" style="display: none;">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('editProfile').addEventListener('click', function () {
+        document.querySelectorAll('#myProfile input').forEach(input => input.disabled = false);
+        document.getElementById('proimg').style.display = 'block'
+        document.getElementById('editProfile').style.display = 'none';
+        document.getElementById('saveProfile').style.display = 'inline-block';
+    });
+
+    document.getElementById('editAddress').addEventListener('click', function () {
+        document.querySelectorAll('#addressBook input').forEach(input => input.disabled = false);
+        document.getElementById('editAddress').style.display = 'none';
+        document.getElementById('saveAddress').style.display = 'inline-block';
+    });
+</script>
+
+<script>
+    function showContent(tabId) {
+        // Hide all content sections
+        document.querySelectorAll('.tab-content').forEach((section) => {
+            section.style.display = 'none';
+        });
+
+        // Show the selected content section
+        const selectedContent = document.getElementById(tabId);
+        if (selectedContent) {
+            selectedContent.style.display = 'block';
+        }
+
+        // Remove 'active' class from all tabs
+        document.querySelectorAll('#sidebar ul li').forEach((tab) => {
+            tab.classList.remove('active');
+        });
+
+        // Add 'active' class to the clicked tab
+        const activeTab = document.getElementById('tab-' + tabId);
+        if (activeTab) {
+            activeTab.classList.add('active');
+        }
+    }
+
+
+</script>
+
+{% endblock %}

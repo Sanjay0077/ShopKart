@@ -1,0 +1,98 @@
+
+{% extends 'store/main.html' %}
+{% block title %}Login{% endblock title %}
+
+
+{% block content %}
+
+{% if messages %}
+<div class="alert alert-danger mx-auto" role="alert" style="width: 500px;">
+
+    <ul>
+      {% for msg in messages %}
+      <li>{{msg}}</li>
+      {% endfor %}
+    </ul>
+
+</div>
+{% endif %}
+<div class="dboard">
+  <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+</div>
+<section class="bg-light py-3 py-md-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-9 col-lg-8 col-xl-7 col-xxl-6">
+        <div class="card border border-light-subtle rounded-3 shadow-sm">
+          <div class="card-body p-3 p-md-4 p-xl-5">
+            <h2 class="fs-7 fw-normal text-center text-secondary mb-4"><u>Enter Seller Details</u></h2>
+            <form action="" method="post">
+              {% csrf_token %}
+              <div class="row gy-6 overflow-hidden">
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="company_name" id="company_name" placeholder="Enter Company Name" required>
+                    <label for="company_name" class="form-label">Company Name</label>
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="product_type" id="product_type" placeholder="Enter Product Type" required>
+                    <label for="product_type" class="form-label">Product Type</label>
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
+                    <label for="email" class="form-label">Email</label>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                    <label for="password" class="form-label">Password</label>
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="mobile_number" id="mobile_number" placeholder="Mobile Number" required>
+                    <label for="mobile_number" class="form-label">Mobile Number</label>
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <div class="d-grid my-3">
+                    <button class="btn btn-primary btn-lg" type="submit">Register Seller</button>
+                  </div>
+                </div>
+
+
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  
+    {% endblock content %}
+
+    <script>
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      fetch('/seller_reg/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify(data),
+      });
+  
+  </script>

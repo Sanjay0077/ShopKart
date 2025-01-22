@@ -1,0 +1,153 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<!-- Search by Product Name -->
+ <div class="filter">
+    <form method="GET" action="" class="form-inline" style="display: flex;margin-top: 10px;">
+        <input class="form-control mb-2 mr-sm-2" type="text" name="name" placeholder="Search by name..." id="name" value="{{ name_filter }}" style="width: 200px;">
+        <input class="form-control mb-2 mr-sm-2" type="number" name="min_price" placeholder="Min Price" value="{{ min_price }}" id="min" step="0.01" style="width: 200px;margin-left: 20px;">
+        <input  class="form-control mb-2 mr-sm-2" type="number" name="max_price" placeholder="Max Price" value="{{ max_price }}" id="max" step="0.01" style="width: 200px;margin-left: 20px;">
+
+        <button class="btn btn-primary mb-2" type="submit" style="margin-left: 20px;">Filter</button>
+    </form>
+</div>
+
+<!-- All products -->
+<br>
+<div class="row">
+    
+    {% for product in products  %}
+    <input type="hidden" value="{{product.id}}" id="pid">
+
+    <div class="col-lg-4">
+        <a href="{% url 'product_details' product.id %}" style="text-decoration:none">
+            <img class="thumbnail" src="{{ product.imageURL }}">
+             <div class="box-element product">
+            <h6><strong>{{product.name}}</strong></h6> 
+        </a>
+            <hr>
+
+            {% if product.quantity > 0 %}
+                {% if  product.id not in itm %}
+                    <button data-product="{{product.id}}" id="customer-id" value="{{ request.session.customer_id|default:'AnonymousUser' }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+               
+                {%else%}
+                    {% for item in items %}
+                        {% if  product.id == item.product.id %}
+             
+                            <div class="input-group" style="width:110px;height:30px;">
+                                <button class="input-group-text bg-success text-light update-cart" style="height:30px;" id="btnMinus" data-product="{{item.product.id}}"  data-action="remove" value="{{ request.session.customer_id|default:'AnonymousUser' }}"><i class="fa fa-minus"></i></button>
+                                <p class="quantity" style="padding:2px 10px 0px 10px;text-align:center">{{item.quantity}}</p>
+                                <button class="input-group-text bg-success text-light update-cart" id="btnPlus" style="height:30px;" data-product="{{item.product.id}}" id="customer-id" data-action="add" value="{{ request.session.customer_id|default:'AnonymousUser' }}"><i class="fa fa-plus"></i></button>
+                            </div>
+                        {%endif%}
+                    {%endfor%}
+                {%endif%}
+
+            {% else %}
+                 <button class="btn btn-secondary"><i class="fa fa-minus"></i> Out of Stock</button>
+            {% endif %}
+
+
+        {% if product.name in favorite_product_names %}
+      
+            <button data-product="{{ product.id }}" data-action="remove" class="btn-add-fav" data-product-id="{{ product.id }}" style="border:none;background-color:white;">
+                <img src="{% static 'images/heart-solid.png' %}" alt="wishlist" height="30px" width="30px">
+            </button>
+        {% else %}
+            <button data-product="{{ product.id }}" data-action="add" class="btn-add-fav" data-product-id="{{ product.id }}" style="border:none;background-color:white;">
+                <img src="{% static 'images/heart-regular.png' %}" alt="wishlist" height="30px" width="30px">
+            </button>
+       
+        {% endif %}
+        
+
+
+            <h4 style="float: right;">${{product.price|floatformat:2}}</h4> 
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+<script>
+
+    var customerId =  document.getElementById('customer-id').value;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const favButtons = document.querySelectorAll(".btn-add-fav");
+    
+        favButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const productId = this.getAttribute("data-product-id");
+                const action = this.getAttribute("data-action");
+    
+                // Disable button to prevent multiple clicks during the request
+                this.disabled = true;
+    
+                fetch("{% url 'updateFavorite' %}", {
+                    method: "POST",
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ productId: productId, action: action }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.status) {
+                            if (action === "add" && data.status === "Item successfully added to favorites") {
+                                // Update the button attributes and image
+                                this.setAttribute("data-action", "remove");
+                                this.querySelector("img").src = "{% static 'images/heart-solid.png' %}";
+    
+                                // Show alert after image change
+                                setTimeout(() => {
+                                    alert("Item added to your favorites!");
+                                }, 50);
+                            } else if (action === "remove" && data.status === "Item removed from favorites") {
+                                // Update the button attributes and image
+                                this.setAttribute("data-action", "add");
+                                this.querySelector("img").src = "{% static 'images/heart-regular.png' %}";
+    
+                                // Show alert after image change
+                                setTimeout(() => {
+                                    alert("Item removed from your favorites!");
+                                }, 50);
+                            } else if (data.status === "Item already added to favorites") {
+                                // If the item is already in favorites, show alert
+                                setTimeout(() => {
+                                    alert("This item is already in your favorites.");
+                                }, 50);
+                            }
+                        } else {
+                            alert(data.status); // Show server error message if any
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        //alert("Something went wrong. Please try again.");
+                        alert("Login and try again.");
+                    })
+                    .finally(() => {
+                        // Re-enable the button after the request completes
+                        this.disabled = false;
+                    });
+            });
+        });
+    });
+        
+    
+    
+</script>
+
+
+
+{% endblock content %}
+

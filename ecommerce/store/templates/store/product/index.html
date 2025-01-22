@@ -1,0 +1,39 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+  <section class="bg-light py-4 my-3" style="min-height:600px;">
+    <div class="container" style="margin-top: 70px;">
+      <div class="row">
+        <div class="col-12">
+          <h4 class="mb-3">{{category}} Categories</h4>
+          <hr style="border-color:#b8bfc2;">
+        </div>
+        {% for item in products %}
+        <div class="col-md-4 col-lg-3">
+          <div class="card my-3">
+            <img src="{{item.imageURL}}"  class="card-image-top" alt="Categories">
+            <hr style="color: gray;">
+            <a href="{% url 'product_details' item.id %}">
+
+            <div class="card-body">
+              <h5 class="card-title text-primary">{{item.name}}</h5>
+              {% comment %} <p class="card-text float-start" style="color: red;">Rs. <s>{{item.price}}</s></p> {% endcomment %}
+              <p class="card-text float-end" style="color: green;">Rs. {{item.price}}</p>
+            </div>
+          </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      </div>
+      
+  </section>
+
+
+
+
+{% endblock content %}

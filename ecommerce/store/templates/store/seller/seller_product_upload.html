@@ -1,0 +1,117 @@
+
+{% extends 'store/main.html' %}
+{% block title %}seller{% endblock title %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+
+<!-- Registration 13 - Bootstrap Brain Component -->
+{% if messages %}
+<div class="alert alert-danger mx-auto" role="alert" style="width: 500px;">
+
+    <ul>
+      {% for msg in messages %}
+      <li>{{msg}}</li>
+      {% endfor %}
+    </ul>
+
+</div>
+{% endif %}
+
+<section class="py-3 py-md-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-9 col-lg-8 col-xl-7 col-xxl-6">
+          <div class="card border border-light-subtle rounded-3 shadow-sm">
+            <div class="card-body p-3 p-md-4 p-xl-5">
+              <h2 class="fs-7 fw-normal text-center text-secondary mb-4"><u>Enter your product details to upload</u></h2>
+              <form action="" id="register-form" method="post" enctype="multipart/form-data">
+                
+                {% csrf_token %}
+                <div class="row gy-6 ">
+                        <div class="col-12">
+                          <div class="form-floating mb-3">
+                              <select class="form-control" name="catagory_name" id="catagory_name" required>
+                                  <option value="">Select Category</option>
+                                  {% for category in categories %}
+                                  <option value="{{ category.id }}" style="color:black" {% if category.id == selected_category_id %}selected{% endif %}>
+                                    {{ category.catagory_name }}
+                                </option>
+                                    {% endfor %}
+                              </select>
+                              <label for="catagory_name" class="form-label">Category</label>
+                          </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" name="product_name" id="productname" value="{{ product.name}}" placeholder="Ex: Boat headset" required>
+                          <label for="product_name" class="form-label">Product Name</label>
+                        </div>
+                      </div>
+                      <label for="formFile" class="form-label">Select Product Image</label>
+                      <div class="form-floating mb-3">
+                        <input class="form-control" name="formfile" type="file" id="formFile" {% if not product %}required{% endif %}>
+                        {% if product and product.imageURL %}
+                            <br>
+                            <label for="formFile" class="form-label">Current Image:</label>
+                            <img src="{{ product.imageURL }}" alt="Product Image" width="100px">
+                            <!-- Optional: Provide a link to the file -->
+                            <a href="{{ product.imageURL }}" target="_blank">View Current File</a>
+                        {% endif %}
+                    </div>
+                    
+                      
+                  <div class="col-12">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" name="vendorname" id="vendorname" value="{{ product.vendor}}" placeholder="Ex: Mi " required>
+                      <label for="vendorname" class="form-label">Vendor Name</label>
+                    </div>
+                  </div>
+                  <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                  <div class="col-12">
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control" name='description' value="" id="exampleFormControlTextarea1" rows="3">{{ product.description }}</textarea>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" name="price" id="price" value="{{ product.price}}" placeholder="confirm_password" required>
+                      <label for="price" class="form-label">Price</label>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-floating mb-3">
+                      <input type="number" class="form-control" min=0 name="quantity" id="quantity" value="{{ product.quantity }}" placeholder="confirm_password" required>
+                      <label for="quantity" class="form-label">Quantity</label>
+                    </div>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="digital" value="yes" id="flexRadioDefault1" 
+                        {% if product and product.digital %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault1">Yes</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="digital" value="no" id="flexRadioDefault2" 
+                        {% if product and not product.digital %}checked{% endif %}>
+                    <label class="form-check-label" for="flexRadioDefault2">No</label>
+                </div>
+                
+                  
+                  <div class="col-12">
+                    <div class="d-grid my-3">
+                      <button class="btn btn-primary btn-lg" type="submit">{% if product %}Update{% else %}Launch Product{% endif %}</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+    {% endblock content %}
+
+ 
+
+

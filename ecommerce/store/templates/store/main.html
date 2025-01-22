@@ -1,0 +1,126 @@
+
+{% load static %}
+<html>
+<head>
+	<title>Ecom</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+	{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> {% endcomment %}
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/profile_style.css' %}">
+
+
+	<script type="text/javascript">
+		var user = '{{request.user}}'
+
+		function getToken(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getToken('csrftoken')
+
+		function getCookie(name) {
+		    // Split cookie string and get all individual name=value pairs in an array
+		    var cookieArr = document.cookie.split(";");
+
+		    // Loop through the array elements
+		    for(var i = 0; i < cookieArr.length; i++) {
+		        var cookiePair = cookieArr[i].split("=");
+
+		        /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+		        if(name == cookiePair[0].trim()) {
+		            // Decode the cookie value and return
+		            return decodeURIComponent(cookiePair[1]);
+		        }
+		    }
+
+		    // Return null if not found
+		    return null;
+		}
+		var cart = JSON.parse(getCookie('cart'))
+
+		if (cart == undefined){
+			cart = {}
+			console.log('Cart Created!', cart)
+			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+		}
+		console.log('Cart:', cart)
+	
+	</script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+	{% block navbar %}
+	  <nav class="navbar navbar-expand-lg  navbar-dark bg-dark fixed-top">
+		<div class="container">
+		  <a class="navbar-brand" href="#"><i class="fa fa-cart-plus"></i> ShopKart</a>
+		  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		  </button>
+		  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<div class="navbar-nav ms-auto">
+			  <a class="nav-link" aria-current="page" href="{% url 'store' %}"><i class="fa fa-home"></i> Home</a>
+			  <a class="nav-link" aria-current="page" href="{% url 'collections' %}"><i class="fa fa-home"></i> Collections</a>
+			  <a class="nav-link" href="{% url 'favviewpage' %}"><i class="fa fa-heart"></i> Favourite</a>
+			  
+				<a class="nav-link" href="{% url 'cart' %}"><i class="fa fa-shopping-cart"></i> Cart</a><p id="cart-total">{{cartItems}}</p>
+			  <div class="btn-group dropdown" style="padding-left: 10px;">
+				
+				
+
+				{% if 'imageURL' in request.session %}
+					<img src="{{ request.session.imageURL }}" alt="Customer Image" id="dropdownMenuButton1"  data-bs-toggle="dropdown" aria-expanded="false" width="45px" height="45px" style="border-radius: 50%;cursor:pointer;">
+				{% else %}
+					<img src="/static/images/profile.png" alt="Default Image" id="dropdownMenuButton1"  data-bs-toggle="dropdown" aria-expanded="false" width="45px" height="45px" style="border-radius: 50%;cursor:pointer;">
+				{% endif %}
+
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+					{% if 'customer_id' in request.session %}
+					<li>
+						<a class="dropdown-item" href="{% url 'profile' request.session.customer_id %}">
+							Dashboard
+						</a>
+					</li>
+				  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+				  {% else %}
+				  <!-- <li><a class="dropdown-item" href="#">{{ user }}</a></li> -->
+				  <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+				  <li><a class="dropdown-item" href="{% url 'register' %}">Register</a></li>
+				  {% endif %}
+				</ul>
+			  </div>
+			</div>
+
+			</div>
+		  </div>
+		</div>
+	  </nav>
+	  {% endblock %}
+
+     <div class="container" style="margin-top: 60px;">
+            <br>
+			
+
+            {% block content %}
+			
+
+
+            {% endblock content %}
+         </div>
+		
+		 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

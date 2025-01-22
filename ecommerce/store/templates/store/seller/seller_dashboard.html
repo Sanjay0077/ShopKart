@@ -1,0 +1,50 @@
+{% extends 'store/main.html' %}
+<h1>Registered Sellers</h1>
+{% load static %}
+{% block navbar %}
+{% endblock %}
+{% block content %}
+<a href="{% url 'seller_product_upload' %}"><button type="button" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;Add Product</button></a>
+<a href="{% url 'logout' %}"><button type="button" class="btn btn-primary">Logout</button></a>
+<br>
+<section class="py-4 my-5" style="min-height:600px;">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h4 class="mb-3">Product Details</h4>
+          <hr style="border-color:#b8bfc2;">
+        </div>
+        <div class="box-element">
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"></strong>Product Name</strong></div>
+                <div style="flex:1"></strong>Catagory</strong></div>
+                <div style="flex:1"></strong>Vendor</strong></div>
+                <div style="flex:1"></strong>Description</strong></div>
+                <div style="flex:1"></strong>Price</strong></div>
+                <div style="flex:1"></strong>Quantity</strong></div>
+                <div style="flex:1"></strong>Digital</strong></div>
+                <div style="flex:1"></strong>Edit/Remove</strong></div>
+            </div>
+            {% for item in product %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{item.imageURL}}"></div>
+                <div style="flex:2">{{item.name}}</div>
+                <div style="flex:1">{{item.catagory_name}}</div>
+                <div style="flex:1">{{item.vendor}}</div>
+                <div style="flex:1">{{item.description | truncatewords:5}}</div>
+                <div style="flex:1">{{item.price}}</div>
+                <div style="flex:1">{{item.quantity}}</div>
+                <div style="flex:1">{% if item.dgital %} Yes {% else %} No {% endif %}</div>
+                <div style="flex:1"><a href="{%  url 'seller_product_upload' item.id %}"><i class="fas fa-edit fa-lg" style="color: #2cc346;"></i></a>
+                    {% comment %} <a href="{%  url 'remove_product' item.id %}" ><img src="{% static 'images/trash.png' %}"></a> {% endcomment %}
+                    <a href="{% url 'remove_product' item.id %}"  onclick="return confirm('Are you sure? to Remove')" ><img src="{% static 'images/trash.png' %}"></a>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endblock %}
+
+
+ 
