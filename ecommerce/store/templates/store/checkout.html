@@ -13,11 +13,13 @@
 							<input required class="form-control" type="email" name="email" placeholder="Email..">
 						</div>
 					</div>
-					{% comment %} <div>
+					 {% comment %} <div>
 						<input type="hidden" value=""
-						<img data-product="{{item.product.id}}" id="customer-id" data-action="add" value="{{ request.session.customer_id|default:'AnonymousUser' }}" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
+						data-product="{{item.product.id}}" id="customer-id" data-action="add" value="{{ request.session.customer_id|default:'AnonymousUser' }}" class="chg-quantity update-cart" >
 
-					</div> {% endcomment %}
+					</div>  {% endcomment %}
+					<button data-product="{{product.id}}" id="customer-id" value="{{ request.session.customer_id|default:'AnonymousUser' }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart" style="display:none">Add to Cart</button>
+
 					<div id="shipping-info">
 						<hr>
 						<p>Shipping Information:</p>
@@ -101,7 +103,9 @@
 		var shipping = '{{order.shipping}}'
 		var total = '{{order.get_cart_total|floatformat:2}}'
 		// var user = '{{request.user}}' 
-		var user = {{ request.session.customer_id | default:'AnonymousUser' }}
+		var cus = document.querySelector(".update-cart");
+		//var user = {{ request.session.customer_id | default:'AnonymousUser' }}
+		var user = cus.value;
 
 
 		if (shipping == 'False'){

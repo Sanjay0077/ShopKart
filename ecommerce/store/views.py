@@ -474,7 +474,7 @@ def admin_login_view(request):
 		try:
 			# Retrieve the admin by email
 			admin = Admin.objects.get(email=email)
-
+			# print(admin)
 			# Check if the password matches
 			if password == admin.password:
 				# Store admin in session (custom authentication)

@@ -36,7 +36,7 @@
 						  <div class="quantity">
                             <button data-product="{{product.id}}" id="customer-id" value="{{ request.session.customer_id|default:'AnonymousUser' }}" data-action="add" class="btn btn-outline-secondary add-btn update-cart" style="display:none">Add to Cart</button>
 
-
+                        
 							<img data-product="{{item.product.id}}" id="customer-id" data-action="add" value="{{ request.session.customer_id|default:'AnonymousUser' }}" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
 
 
