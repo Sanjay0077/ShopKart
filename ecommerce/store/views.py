@@ -635,6 +635,7 @@ def seller_dashboard(request):
 	seller = Seller.objects.get(id = seller_id)
 	product =  Product.objects.filter(seller=seller)
 	print(product)
+	print(seller)
 	return render(request, 'store/seller/seller_dashboard.html', {'sellers': seller,'product':product})
 
 def remove_product(request,id):
